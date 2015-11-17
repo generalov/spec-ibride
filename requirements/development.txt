@@ -1,0 +1,15 @@
+pyformat
+isort
+doc8
+sphinx
+sphinx-autobuild
+sphinx_rtd_theme
+
+django-extensions
+pygraphviz
+#pyparsing==1.5.7
+#pydot
+
+pytest
+pytest-xdist
+pytest-mock

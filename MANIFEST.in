@@ -1,0 +1,2 @@
+include versioneer.py
+include src/spec_ibride/_version.py
