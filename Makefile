@@ -13,14 +13,15 @@
 DOCS=$(CURDIR)/docs
 SRC=$(CURDIR)/src
 VENV=$(CURDIR)/env
+MANAGE=$(SRC)/manage.py
 
 
 # Setup environment
 env:
 	virtualenv $(VENV) --clear
 	$(VENV)/bin/pip install --upgrade pip
-	$(VENV)/bin/pip install --upgrade -r requirements/development.txt
 	$(VENV)/bin/pip install -e .
+	$(VENV)/bin/pip install --upgrade -r requirements/development.txt
 
 
 # Testing
@@ -52,9 +53,12 @@ lint: format pep8 pyflakes loc docs-lint
 
 
 # Build documentation
-docs:
-	. $(VENV)/bin/activate && sphinx-apidoc -f -o $(DOCS) $(SRC)
+docs: docs-db
+	. $(VENV)/bin/activate && sphinx-apidoc -f -o $(DOCS) $(SRC)/spec_ibride
 	. $(VENV)/bin/activate && $(MAKE) -C $(DOCS) html
+
+docs-db:
+	. $(VENV)/bin/activate && $(MANAGE) graph_models -a -g -o $(DOCS)/_static/images/db.svg
 
 docs-watch: docs
 	. $(VENV)/bin/activate && sphinx-autobuild -E -a -z $(SRC) -n -b html $(DOCS) $(DOCS)/_build/html
