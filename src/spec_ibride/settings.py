@@ -42,6 +42,7 @@ INSTALLED_APPS = (
     'django_extensions',
     'favicon',
     'linaro_django_pagination',
+    'tagging',
 
     'spec_ibride.gallery',
 )

@@ -2,6 +2,8 @@ import csv
 import random
 from django.core.management.base import BaseCommand, CommandError
 from spec_ibride.gallery.models import Photo
+from django.utils.lorem_ipsum import words
+from tagging.models import Tag
 
 
 class Command(BaseCommand):
@@ -20,6 +22,7 @@ class Command(BaseCommand):
         data_filename = options['data']
         with open(data_filename, 'rb') as csvfile:
             csvreader = csv.DictReader(csvfile, delimiter=";")
+            self.stdout.write('Import photos from "%s"' % data_filename)
             Photo.objects.bulk_create((
                 Photo(
                     src=row['src'],
@@ -29,5 +32,12 @@ class Command(BaseCommand):
                 ) for row in csvreader),
                 batch_size=99
             )
+            self.stdout.write('Generate tags')
+            tag_words = words(100).split()
+            for photo in Photo.objects.order_by('?')[:100]:
+                sample_length = random.randrange(0, 6)
+                if sample_length:
+                    selected_tags = random.sample(tag_words, sample_length)
+                    Tag.objects.update_tags(photo, u' '.join(selected_tags))
 
-            self.stdout.write('Successfully imported "%s"' % data_filename)
+            self.stdout.write('Done')

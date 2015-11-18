@@ -4,6 +4,7 @@
 {% block content %}
 
     <div class="gallery">
+
         <!-- Page Heading -->
         <div class="row">
             <div class="col-lg-12">
@@ -48,4 +49,9 @@
             {% paginate using 'gallery/pagination.html' %}
         {% endif %}
     </div>
+{% endblock %}
+
+{% block sidebar %}
+{% include 'gallery/tagcloud.html' %}
+
 {% endblock %}

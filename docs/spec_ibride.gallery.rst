@@ -6,7 +6,7 @@ Subpackages
 
 .. toctree::
 
-    spec_ibride.gallery.migrations
+    spec_ibride.gallery.management
 
 Submodules
 ----------
@@ -31,6 +31,14 @@ spec_ibride.gallery.tests module
 --------------------------------
 
 .. automodule:: spec_ibride.gallery.tests
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+spec_ibride.gallery.urls module
+-------------------------------
+
+.. automodule:: spec_ibride.gallery.urls
     :members:
     :undoc-members:
     :show-inheritance:

@@ -16,7 +16,7 @@ body {
     display: block;
     width: 200px;
     height: 200px;
-    background-color: darkgray;
+    background-color: #a9a9a9;
 }
 
 .gallery__image {
@@ -38,3 +38,33 @@ body {
     left: .5em;
 }
 
+
+.tag {
+    padding-right: 1em;
+    white-space: nowrap;
+}
+
+
+.tag_weight_1 {
+    font-size: 75%;
+}
+.tag_weight_2 {
+    font-size: 85%;
+}
+.tag_weight_3 {
+}
+.tag_weight_4 {
+    font-size: 115%;
+}
+.tag_weight_5 {
+    font-size: 125%;
+}
+
+.tag-cloud {
+}
+
+
+.sidebar {
+    margin-left: 2em;
+    margin-top: 11em;
+}

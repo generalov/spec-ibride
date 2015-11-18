@@ -2,6 +2,7 @@
 from django.conf import settings
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
+from tagging.registry import register
 
 
 class Photo(models.Model):
@@ -18,3 +19,5 @@ class Photo(models.Model):
             ['created_at'],
             ['rating'],
         ]
+
+register(Photo)
