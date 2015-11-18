@@ -14,6 +14,7 @@ DOCS=$(CURDIR)/docs
 SRC=$(CURDIR)/src
 VENV=$(CURDIR)/env
 MANAGE=$(SRC)/manage.py
+export DJANGO_SETTINGS_MODULE = spec_ibride.settings
 
 
 # Setup environment

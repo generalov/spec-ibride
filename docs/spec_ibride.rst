@@ -1,6 +1,13 @@
 spec_ibride package
 ===================
 
+Subpackages
+-----------
+
+.. toctree::
+
+    spec_ibride.gallery
+
 Submodules
 ----------
 

@@ -13,6 +13,7 @@ Contents:
 
    problem
    dbschema
+   modules
 
 Indices and tables
 ==================

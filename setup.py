@@ -59,6 +59,7 @@ setup(
     zip_safe=True,
     install_requires=[
         'Django',
+        'django-favicon',
     ],
     tests_require=['tox'],
     cmdclass=dict(versioneer.get_cmdclass().items(), **{'test': Tox}),
