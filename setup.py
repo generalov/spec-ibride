@@ -60,6 +60,7 @@ setup(
     install_requires=[
         'Django',
         'django-favicon',
+        'linaro-django-pagination',
     ],
     tests_require=['tox'],
     cmdclass=dict(versioneer.get_cmdclass().items(), **{'test': Tox}),
