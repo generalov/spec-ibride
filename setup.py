@@ -60,6 +60,7 @@ setup(
     install_requires=[
         'Django',
         'django-favicon',
+        'django-debug-toolbar',
         'linaro-django-pagination',
     ],
     tests_require=['tox'],

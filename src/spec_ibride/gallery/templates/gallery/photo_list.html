@@ -14,16 +14,25 @@
         </div>
         <!-- /.row -->
 
+        <div class="row">
+            <div class="col-md-12">
+                <ul class="nav nav-pills">
+                  <li role="presentation" {% if not request.GET.ordering or request.GET.ordering == 'recent' %}class="active"{% endif %}><a href="{{ request.path }}?ordering=recent">Новые</a></li>
+                  <li role="presentation" {% if request.GET.ordering == 'popular' %}class="active"{% endif %}><a href="{{ request.path }}?ordering=popular">Популярные</a></li>
+                </ul>
+            </div>
+        </div>
         <!-- Photos Row -->
         <div class="row">
             {% for photo in photo_list %}
-                <div class="col-md-3 col-xs-6 gallery__item">
-                    <a href="#">
-                        <img class="img-responsive gallery__photo" src="{{ photo.src }}" alt="" width="200"
-                             height="200">
-                    </a>
-
-                    <p>{{ photo.created_at|date }}</p>
+                <div class="col-md-3 col-xs-6">
+                    <div class="gallery__item"><a class="gallery__photo" href="#">
+                        <img class="img-responsive gallery__image" src="{{ photo.src }}" alt=""
+                             width="200" height="200"
+                            onerror='this.style.display = "none"'>
+                        <span class="badge gallery__rating">+{{ photo.rating }}</span>
+                        <span class="badge gallery__pubdate">{{ photo.created_at|date }}</span>
+                    </a></div>
                 </div>
             {% empty %}
                 <div class="col-md-12">
@@ -36,7 +45,7 @@
 
         {% if is_paginated %}
             <hr>
-            {%  paginate using 'gallery/pagination.html' %}
+            {% paginate using 'gallery/pagination.html' %}
         {% endif %}
     </div>
 {% endblock %}

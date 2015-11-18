@@ -31,8 +31,7 @@
                                     <li class="active"><span class="current page">{{ page }}</span></li>
                                 {% else %}
                                     {% if disable_link_for_first_page and page == 1 %}
-                                        <li><a href="
-                                                {{ request.path }}{% if getvars %}?{{ getvars|slice:"1:" }}{% endif %}"
+                                        <li><a href="{{ request.path }}{% if getvars %}?{{ getvars|slice:"1:" }}{% endif %}"
                                                class="page">{{ page }}</a></li>
                                     {% else %}
                                         <li><a href="?page{{ page_suffix }}={{ page }}{{ getvars }}"

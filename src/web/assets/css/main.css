@@ -1,12 +1,40 @@
 body {
-  padding-top: 50px;
+    padding-top: 50px;
 }
+
 .starter-template {
-  padding: 40px 15px;
-  text-align: center;
+    padding: 40px 15px;
+    text-align: center;
+}
+
+.gallery__item {
+    margin: 0.5em;
 }
 
 .gallery__photo {
-  width: 200px;
-  height: 200px;
+    position: relative;
+    display: block;
+    width: 200px;
+    height: 200px;
+    background-color: darkgray;
 }
+
+.gallery__image {
+    width: 200px;
+    height: 200px;
+}
+
+.gallery__rating {
+    position: absolute;
+    display: block;
+    bottom: .5em;
+    right: .5em;
+}
+
+.gallery__pubdate {
+    position: absolute;
+    display: block;
+    top: .5em;
+    left: .5em;
+}
+

@@ -25,6 +25,11 @@ env:
 	$(VENV)/bin/pip install --upgrade -r requirements/development.txt
 
 
+populatedb:
+	rm -f data/db.sqlite3
+	$(MANAGE) migrate
+	$(MANAGE) populatedb -d data/test-photo.csv
+
 # Testing
 tests:
 	$(VENV)/bin/py.test $(SRC)

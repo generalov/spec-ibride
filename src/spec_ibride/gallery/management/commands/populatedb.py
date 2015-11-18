@@ -1,4 +1,5 @@
 import csv
+import random
 from django.core.management.base import BaseCommand, CommandError
 from spec_ibride.gallery.models import Photo
 
@@ -23,8 +24,9 @@ class Command(BaseCommand):
                 Photo(
                     src=row['src'],
                     user_id=row['user_id'],
-                    created_at=row['created_at'])
-                for row in csvreader),
+                    created_at=row['created_at'],
+                    rating=random.randrange(0, 100500)
+                ) for row in csvreader),
                 batch_size=99
             )
 
