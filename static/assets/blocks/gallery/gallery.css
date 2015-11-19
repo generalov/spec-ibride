@@ -1,8 +1,8 @@
 .gallery {
+    margin: 0.5em;
 }
 
 .gallery__item {
-    margin: 0.5em;
 }
 
 .gallery__photo {

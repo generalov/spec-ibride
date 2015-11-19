@@ -1,8 +1,7 @@
 # coding=utf-8
 from django.http.response import Http404
-from django.views.generic import ListView
 from django.utils.translation import ugettext_lazy as _
-
+from django.views.generic import ListView
 from spec_ibride.gallery.models import Photo
 from tagging.models import TaggedItem
 from tagging.utils import calculate_cloud
@@ -14,7 +13,7 @@ class PhotoListView(ListView):
     """
     model = Photo
     paginate_by = 20
-    context_object_name = "photo_list"
+    context_object_name = 'photo_list'
     all_ordering = [
         {'title': _('popular'), 'name': 'popular', 'order_by': ['-rating']},
         {'title': _('recent'), 'name': 'recent', 'order_by': ['-created_at']},
@@ -33,7 +32,7 @@ class PhotoListView(ListView):
         return data
 
     def get_ordering(self):
-        """Вернуть порядок сортировки"""
+        """Вернуть порядок сортировки."""
         ordering = self._get_requested_ordering()
         by_name = dict((x['name'], x) for x in self.all_ordering)
         if ordering not in by_name:
@@ -62,7 +61,7 @@ class PhotoListView(ListView):
         return res
 
     def _get_tagcloud_data(self):
-        """Вернуть данные для облака тегов"""
+        """Вернуть данные для облака тегов."""
         tag_cloud = calculate_cloud(Photo.tags.usage(counts=True), steps=5)
         requested_tags = self._get_requested_tags()
         is_tag_limit_reached = len(requested_tags) >= self.max_selected_tags
@@ -86,5 +85,5 @@ class PhotoListView(ListView):
         return self.request.GET.get(self.ordering_kwarg, self.default_ordering)
 
     def _get_requested_tags(self):
-        """Вернуть список тегов из запроса если есть"""
+        """Вернуть список тегов из запроса если есть."""
         return self.request.GET.getlist(self.tag_kwarg, [])[:self.max_selected_tags]

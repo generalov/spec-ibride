@@ -4,8 +4,9 @@ import os
 import sys
 
 import versioneer
+from setuptools.command.test import test as TestCommand
+from setuptools.dist import Distribution
 
-sys.path.insert(0, os.path.abspath('src'))
 try:
     from setuptools import setup, find_packages
 except ImportError:
@@ -13,9 +14,6 @@ except ImportError:
 
     use_setuptools()
     from setuptools import setup, find_packages
-
-from setuptools.command.test import test as TestCommand
-from setuptools.dist import Distribution
 
 
 class BinaryDistribution(Distribution):
@@ -53,17 +51,17 @@ setup(
     name='spec-ibride',
     version=versioneer.get_version(),
     license='MIT',
-    package_dir={'': 'src'},
-    packages=find_packages('src', exclude=['tests.*', 'tests']),
+    packages=find_packages('', exclude=['tests.*', 'tests']),
     classifiers=['Private :: Do Not Upload'],
     zip_safe=True,
     install_requires=[
-        'Django',
+        'django',
         'django-tagging',
         'django-favicon',
         'django-debug-toolbar',
+        'django-extensions',
         'linaro-django-pagination',
-        'fake-factory',
+        'mysqlclient',
     ],
     tests_require=['tox'],
     cmdclass=dict(versioneer.get_cmdclass().items(), **{'test': Tox}),

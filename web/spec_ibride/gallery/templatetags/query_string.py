@@ -9,6 +9,7 @@ register = template.Library()
 
 
 class QueryStringNode(template.Node):
+
     def __init__(self, tag_name, parsed_args, var_name=None, silent=False):
         self.tag_name = tag_name
         self.parsed_args = parsed_args
@@ -18,7 +19,8 @@ class QueryStringNode(template.Node):
     def render(self, context):
         # django.core.context_processors.request should be enabled in
         # settings.TEMPLATE_CONTEXT_PROCESSORS.
-        # Or else, directly pass the HttpRequest object as 'request' in context.
+        # Or else, directly pass the HttpRequest object as 'request' in
+        # context.
         query_dict = context['request'].GET.copy()
         for op, key, value in self.parsed_args:
             if op == '+':
@@ -57,16 +59,16 @@ def make_query_string(parser, token):
     args = token.split_contents()
     tag_name = args[0]
     as_form = False
-    if len(args) > 3 and args[-3] == "as":
+    if len(args) > 3 and args[-3] == 'as':
         # {% x_make_query_string ... as foo silent %} case.
-        if args[-1] != "silent":
+        if args[-1] != 'silent':
             raise template.TemplateSyntaxError(
                 "Only 'silent' flag is allowed after %s's name, not '%s'." %
                 (tag_name, args[-1]))
         as_form = True
         silent = True
         args = args[:-1]
-    elif len(args) > 2 and args[-2] == "as":
+    elif len(args) > 2 and args[-2] == 'as':
         # {% x_make_query_string ... as foo %} case.
         as_form = True
         silent = False
@@ -88,11 +90,13 @@ def make_query_string(parser, token):
         if operator == '+':
             # item+="foo": Append to current query arguments.
             # e.g. item=1 -> item=1&item=foo
-            parsed_args.append(('+', arg[:-1], parser.compile_filter(raw_value)))
+            parsed_args.append(
+                ('+', arg[:-1], parser.compile_filter(raw_value)))
         elif operator == '-':
             # item-="bar": Remove from current query arguments.
             # e.g. item=1&item=bar -> item=1
-            parsed_args.append(('-', arg[:-1], parser.compile_filter(raw_value)))
+            parsed_args.append(
+                ('-', arg[:-1], parser.compile_filter(raw_value)))
         elif raw_value == '':
             # item=: Completely remove from current query arguments.
             # e.g. item=1&item=2 -> ''

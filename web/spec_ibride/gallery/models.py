@@ -7,9 +7,11 @@ from tagging.registry import register
 
 class Photo(models.Model):
     """Модель Photo содержит данные о фотографии."""
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name=_('user'))
+    # user = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name=_('user'))
+    user_id = models.IntegerField(verbose_name=_('user'))
     src = models.URLField(verbose_name=_('source'))
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name=_('created at'))
+    created_at = models.DateTimeField(
+        auto_now_add=True, verbose_name=_('created at'))
     rating = models.IntegerField(verbose_name=_('source'), default=0)
 
     class Meta:
