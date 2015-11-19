@@ -1,0 +1,33 @@
+.gallery {
+}
+
+.gallery__item {
+    margin: 0.5em;
+}
+
+.gallery__photo {
+    position: relative;
+    display: block;
+    width: 200px;
+    height: 200px;
+    background-color: #a9a9a9;
+}
+
+.gallery__image {
+    width: 200px;
+    height: 200px;
+}
+
+.gallery__rating {
+    position: absolute;
+    display: block;
+    bottom: .5em;
+    right: .5em;
+}
+
+.gallery__pubdate {
+    position: absolute;
+    display: block;
+    top: .5em;
+    left: .5em;
+}

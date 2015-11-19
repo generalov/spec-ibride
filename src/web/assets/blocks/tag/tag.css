@@ -1,0 +1,35 @@
+
+.tag {
+    margin-right: 1em;
+    padding: .2em .5em;
+    white-space: nowrap;
+    border-radius: .5em;
+}
+
+.tag_active {
+    color: #fff;
+    background-color: #337ab7;
+}
+
+.tag_disabled {
+    color: gray;
+}
+
+.tag_weight_1 {
+    font-size: 75%;
+}
+
+.tag_weight_2 {
+    font-size: 85%;
+}
+
+.tag_weight_3 {
+}
+
+.tag_weight_4 {
+    font-size: 115%;
+}
+
+.tag_weight_5 {
+    font-size: 125%;
+}
