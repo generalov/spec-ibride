@@ -43,6 +43,7 @@ INSTALLED_APPS = (
     'favicon',
     'linaro_django_pagination',
     'tagging',
+    'webpack_loader',
 
     'spec_ibride.gallery',
 )
@@ -75,6 +76,13 @@ TEMPLATES = [
         },
     },
 ]
+
+WEBPACK_LOADER = {
+    'DEFAULT': {
+        'BUNDLE_DIR_NAME': 'bundles/',
+        'STATS_FILE': os.path.join(BASE_DIR, 'web/webpack-stats.json'),
+    }
+}
 
 WSGI_APPLICATION = 'spec_ibride.wsgi.application'
 
@@ -109,5 +117,5 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, "web"),
+    os.path.join(BASE_DIR, "web/assets"),
 )

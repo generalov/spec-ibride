@@ -64,6 +64,7 @@ setup(
         'django-debug-toolbar',
         'linaro-django-pagination',
         'fake-factory',
+        'django-webpack-loader',
     ],
     tests_require=['tox'],
     cmdclass=dict(versioneer.get_cmdclass().items(), **{'test': Tox}),

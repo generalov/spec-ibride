@@ -7,6 +7,7 @@ body {
     text-align: center;
 }
 
+
 .gallery__item {
     margin: 0.5em;
 }
@@ -44,21 +45,25 @@ body {
     white-space: nowrap;
 }
 
-
 .tag_weight_1 {
     font-size: 75%;
 }
+
 .tag_weight_2 {
     font-size: 85%;
 }
+
 .tag_weight_3 {
 }
+
 .tag_weight_4 {
     font-size: 115%;
 }
+
 .tag_weight_5 {
     font-size: 125%;
 }
+
 
 .tag-cloud {
 }
