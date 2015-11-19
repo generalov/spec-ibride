@@ -40,10 +40,20 @@ body {
 
 
 .tag {
-    padding-right: 1em;
+    margin-right: 1em;
+    padding: .2em .5em;
     white-space: nowrap;
+    border-radius: .5em;
 }
 
+.tag_active {
+    color: #fff;
+    background-color: #337ab7;
+}
+
+.tag_disabled {
+    color: gray;
+}
 
 .tag_weight_1 {
     font-size: 75%;

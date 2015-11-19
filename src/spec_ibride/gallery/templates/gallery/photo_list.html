@@ -8,8 +8,8 @@
         <!-- Page Heading -->
         <div class="row">
             <div class="col-lg-12">
-                <h1 class="page-header">Page Heading
-                    <small>Secondary Text</small>
+                <h1 class="page-header">Тестовое задание
+                    <small>для ibride.com</small>
                 </h1>
             </div>
         </div>
@@ -18,11 +18,14 @@
         <div class="row">
             <div class="col-md-12">
                 <ul class="nav nav-pills">
-                  <li role="presentation" {% if not request.GET.ordering or request.GET.ordering == 'recent' %}class="active"{% endif %}><a href="{{ request.path }}?ordering=recent">Новые</a></li>
-                  <li role="presentation" {% if request.GET.ordering == 'popular' %}class="active"{% endif %}><a href="{{ request.path }}?ordering=popular">Популярные</a></li>
+                    {% for ordering in ordering_list %}
+                        <li role="presentation" {% if ordering.active %}class="active"{% endif %}><a
+                                href="{{ ordering.url }}">{{ ordering.title }}</a></li>
+                    {% endfor %}
                 </ul>
             </div>
         </div>
+
         <!-- Photos Row -->
         <div class="row">
             {% for photo in photo_list %}
@@ -30,7 +33,7 @@
                     <div class="gallery__item"><a class="gallery__photo" href="#">
                         <img class="img-responsive gallery__image" src="{{ photo.src }}" alt=""
                              width="200" height="200"
-                            onerror='this.style.display = "none"'>
+                             onerror='this.style.display = "none"'>
                         <span class="badge gallery__rating">+{{ photo.rating }}</span>
                         <span class="badge gallery__pubdate">{{ photo.created_at|date }}</span>
                     </a></div>
@@ -43,7 +46,6 @@
         </div>
         <!-- /.row -->
 
-
         {% if is_paginated %}
             <hr>
             {% paginate using 'gallery/pagination.html' %}
@@ -52,6 +54,6 @@
 {% endblock %}
 
 {% block sidebar %}
-{% include 'gallery/tagcloud.html' %}
+    {% include 'gallery/tag-cloud.html' %}
 
 {% endblock %}

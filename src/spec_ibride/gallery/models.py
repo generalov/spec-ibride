@@ -20,4 +20,4 @@ class Photo(models.Model):
             ['rating'],
         ]
 
-register(Photo)
+register(Photo, tag_descriptor_attr='tags')
