@@ -14,10 +14,12 @@ nginx:
 
 web:
   build: ./web/
-  command: /usr/local/bin/gunicorn spec_ibride.wsgi:application -w 2 -b :8000
+  command: /usr/local/bin/gunicorn spec_ibride.wsgi:application --log-file - --access-logfile - --log-level info -w 2 -b :8000
   #command: python manage.py runserver 0.0.0.0:8000
   volumes:
     - ./web:/code
+  volumes_from:
+    - static
   expose:
     - "8000"
   links:
@@ -32,3 +34,4 @@ db:
     MYSQL_DATABASE: spec_ibride
     MYSQL_USER: spec_ibride
     MYSQL_PASSWORD: letmein
+

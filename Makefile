@@ -11,9 +11,9 @@
 #   make watch-docs ----------- starts HTTP sperver to watch documentation with live reload
 
 DOCS=$(CURDIR)/docs
-SRC=$(CURDIR)/web
-VENV=$(CURDIR)/env
-MANAGE=$(SRC)/manage.py
+WEB=$(CURDIR)/web
+VENV=$(WEB)/env
+MANAGE=$(WEB)/manage.py
 export DJANGO_SETTINGS_MODULE = spec_ibride.settings
 
 
@@ -32,25 +32,25 @@ populatedb:
 
 # Testing
 tests:
-	$(VENV)/bin/py.test $(SRC)
+	$(VENV)/bin/py.test $(WEB)
 
 
 # QA
 format:
-	find $(SRC) -type f -name '*.py' -exec isort --settings-path $(CURDIR) {} \;
-	pyformat -r -i --exclude _version.py $(SRC)/
+	find $(WEB) -type f -name '*.py' -exec isort --settings-path $(CURDIR) {} \;
+	pyformat -r -i --exclude _version.py $(WEB)/
 
 loc:
-	sloccount $(SRC)
+	sloccount $(WEB)
 
 pep8:
 	@echo "#############################################"
 	@echo "# Running PEP8 Compliance Tests"
 	@echo "#############################################"
-	-pep8 -r --ignore=E501,E221,W291,W391,E302,E251,E203,W293,E231,E303,E201,E225,E261,E241 --exclude _version.py $(SRC)/
+	-pep8 -r --ignore=E501,E221,W291,W391,E302,E251,E203,W293,E231,E303,E201,E225,E261,E241 --exclude _version.py $(WEB)/
 
 pyflakes:
-	pyflakes $(SRC)
+	pyflakes $(WEB)
 
 docs-lint:
 	$(VENV)/bin/doc8 --ignore-path $(DOCS)/_build --max-line-length=120 $(DOCS)
@@ -60,15 +60,15 @@ lint: format pep8 pyflakes loc docs-lint
 
 # Build documentation
 docs: docs-db
-	. $(VENV)/bin/activate && sphinx-apidoc -f -o $(DOCS) $(SRC)/spec_ibride
+	. $(VENV)/bin/activate && sphinx-apidoc -f -o $(DOCS) $(WEB)/spec_ibride
 	. $(VENV)/bin/activate && $(MAKE) -C $(DOCS) html
 
 docs-db:
 	. $(VENV)/bin/activate && $(MANAGE) graph_models -a -g -o $(DOCS)/_static/images/db.svg
 
 docs-watch: docs
-	. $(VENV)/bin/activate && sphinx-autobuild -E -a -z $(SRC) -n -b html $(DOCS) $(DOCS)/_build/html
+	. $(VENV)/bin/activate && sphinx-autobuild -E -a -z $(WEB) -n -b html $(DOCS) $(DOCS)/_build/html
 
 
 
-.PHONY: dev tests loc pep8 pyflakes format rst-lint lint docs watch-docs
+.PHONY: env tests loc pep8 pyflakes format rst-lint lint docs watch-docs

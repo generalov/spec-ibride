@@ -43,6 +43,7 @@ INSTALLED_APPS = (
     'debug_toolbar',
     'django_extensions',
     'linaro_django_pagination',
+    'webpack_loader',
 
     'spec_ibride.gallery',
 )
@@ -115,5 +116,14 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, '..', 'static'),
+    '/static',
 )
+
+WEBPACK_LOADER = {
+    'DEFAULT': {
+        'BUNDLE_DIR_NAME': 'assets/',  # must end with slash
+        'STATS_FILE': '/static/assets/webpack-stats.json',
+        'POLL_INTERVAL': 0.1,
+        'IGNORE': ['.+\.hot-update.js', '.+\.map']
+    }
+}

@@ -3,6 +3,8 @@ var webpack = require('webpack');
 var autoprefixer = require('autoprefixer');
 var BundleTracker = require('webpack-bundle-tracker');
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
+var CompressionPlugin = require("compression-webpack-plugin");
+var mkdirp = require('mkdirp');
 
 
 module.exports = function (options) {
@@ -18,7 +20,14 @@ module.exports = function (options) {
             $: "jquery",
             jQuery: "jquery"
         }),
-        new ExtractTextPlugin('[name].css'),
+        new ExtractTextPlugin(options.longTermCaching ? '[name]-[hash].css' : '[name].css'),
+        new CompressionPlugin({
+            asset: "{file}.gz",
+            algorithm: "gzip",
+            regExp: /\.js$|\.html|\.css$/,
+            //threshold: 10240,
+            //minRatio: 0.8
+        }),
         new BundleTracker({filename: path.relative(__dirname, path.join(output.path, 'webpack-stats.json'))}),
     ];
     var loaders = [
@@ -30,6 +39,7 @@ module.exports = function (options) {
         {test: /\.svg(\?v=\d+\.\d+\.\d+)?$/, loader: "url?limit=10000&mimetype=image/svg+xml"}
     ];
     mkdirp.sync(output.path)
+
     return {
         entry: entry,
         output: output,

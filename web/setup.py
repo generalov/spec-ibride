@@ -61,6 +61,7 @@ setup(
         'django-debug-toolbar',
         'django-extensions',
         'linaro-django-pagination',
+        'django-webpack-loader',
         'mysqlclient',
     ],
     tests_require=['tox'],
