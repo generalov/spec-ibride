@@ -11,7 +11,7 @@
 #   make watch-docs ----------- starts HTTP sperver to watch documentation with live reload
 
 DOCS=$(CURDIR)/docs
-SRC=$(CURDIR)/src
+SRC=$(CURDIR)/web
 VENV=$(CURDIR)/env
 MANAGE=$(SRC)/manage.py
 export DJANGO_SETTINGS_MODULE = spec_ibride.settings
@@ -21,8 +21,8 @@ export DJANGO_SETTINGS_MODULE = spec_ibride.settings
 env:
 	virtualenv $(VENV) --clear
 	$(VENV)/bin/pip install --upgrade pip
-	$(VENV)/bin/pip install -e .
-	$(VENV)/bin/pip install --upgrade -r requirements/development.txt
+	$(VENV)/bin/pip install -e web
+	$(VENV)/bin/pip install --upgrade -r web/requirements-dev.txt
 
 
 populatedb:
@@ -38,7 +38,7 @@ tests:
 # QA
 format:
 	find $(SRC) -type f -name '*.py' -exec isort --settings-path $(CURDIR) {} \;
-	pyformat -r -i --exclude _version.py $(SRC)/ setup.py
+	pyformat -r -i --exclude _version.py $(SRC)/
 
 loc:
 	sloccount $(SRC)
@@ -68,6 +68,7 @@ docs-db:
 
 docs-watch: docs
 	. $(VENV)/bin/activate && sphinx-autobuild -E -a -z $(SRC) -n -b html $(DOCS) $(DOCS)/_build/html
+
 
 
 .PHONY: dev tests loc pep8 pyflakes format rst-lint lint docs watch-docs

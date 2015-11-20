@@ -7,6 +7,7 @@ Subpackages
 .. toctree::
 
     spec_ibride.gallery.management
+    spec_ibride.gallery.templatetags
 
 Submodules
 ----------

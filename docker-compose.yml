@@ -1,0 +1,34 @@
+static:
+  build: ./static/
+  volumes:
+    - /static
+
+nginx:
+  build: ./nginx/
+  ports:
+    - "80:80"
+  volumes_from:
+    - static
+  links:
+    - web:web
+
+web:
+  build: ./web/
+  command: /usr/local/bin/gunicorn spec_ibride.wsgi:application -w 2 -b :8000
+  #command: python manage.py runserver 0.0.0.0:8000
+  volumes:
+    - ./web:/code
+  expose:
+    - "8000"
+  links:
+    - db:db
+
+db:
+  image: mariadb
+  volumes:
+    - ./data/mysql:/var/lib/mysql
+  environment:
+    MYSQL_ROOT_PASSWORD: letmein
+    MYSQL_DATABASE: spec_ibride
+    MYSQL_USER: spec_ibride
+    MYSQL_PASSWORD: letmein

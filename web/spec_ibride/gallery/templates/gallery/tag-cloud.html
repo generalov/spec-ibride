@@ -1,0 +1,9 @@
+{# Облако тегов #}
+{% load make_query_string from query_string %}
+<div class="tag-cloud well well-sm">
+    {% for tag in tag_cloud %}
+        <a class="tag tag_weight_{{ tag.font_size }}{% if tag.active %} tag_active{% endif %}{% if tag.disabled %} tag_disabled{% endif %}" role="button" href="{{ tag.url }}">
+            {{ tag.name }}&thinsp;({{ tag.count }})
+        </a>
+    {% endfor %}
+</div>
