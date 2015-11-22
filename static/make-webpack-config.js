@@ -1,36 +1,64 @@
+/*jslint node: true */
 var path = require("path");
 var webpack = require('webpack');
 var autoprefixer = require('autoprefixer');
 var BundleTracker = require('webpack-bundle-tracker');
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
 var CompressionPlugin = require("compression-webpack-plugin");
+var Clean = require('clean-webpack-plugin');
 var mkdirp = require('mkdirp');
 
 
 module.exports = function (options) {
     var entry = {
-        main: ["webpack/hot/dev-server", "./assets/entry"]
+        main: options.hotComponents ? ["webpack/hot/dev-server", "./assets/entry"] : "./assets/entry"
     };
+    var publicPath = options.devServer ? "http://localhost:2992/static/assets/" :
+        "/static/assets/";
     var output = {
         path: path.resolve('build/public'),
-        filename: options.longTermCaching ? "[name]-[hash].js" : "[name].js"
+        publicPath: publicPath,
+        filename: options.longTermCaching ? "[name]-[hash].js" : "[name].js",
+        pathinfo: options.debug
     };
     var plugins = [
+        // cleanup build path
+        new Clean([output.path + '/**/*.*']),
+        // provide jQuery for bootstrap
         new webpack.ProvidePlugin({
             $: "jquery",
             jQuery: "jquery"
         }),
-        new ExtractTextPlugin(options.longTermCaching ? '[name]-[hash].css' : '[name].css'),
-        new CompressionPlugin({
+        /* prod */
+        options.minimize && new webpack.DefinePlugin({
+            'process.env': {
+                // This has effect on the react lib size
+                'NODE_ENV': JSON.stringify('production')
+            }
+        }),
+        options.minimize && new webpack.optimize.DedupePlugin(),
+        options.minimize && new webpack.optimize.UglifyJsPlugin({
+            compressor: {
+                warnings: false
+            }
+        }),
+        options.minimize && new webpack.NoErrorsPlugin(),
+        options.separateStylesheet && new ExtractTextPlugin(
+            options.longTermCaching ? '[name]-[hash].css' : '[name].css'
+        ),
+        options.minimize && new CompressionPlugin({
             asset: "{file}.gz",
             algorithm: "gzip",
             regExp: /\.js$|\.html|\.css$/,
             //threshold: 10240,
             //minRatio: 0.8
         }),
+        // generate webpack-stats.json for django-webpack-loader integration
         new BundleTracker({filename: path.relative(__dirname, path.join(output.path, 'webpack-stats.json'))}),
-    ];
+    ].filter(Boolean); // remove empty rules
+
     var loaders = [
+        // ES6 support with babel2 (look into .babelrc for list of features)
         {test: /\.jsx?$/, exclude: /(node_modules|bower_components)/, loader: 'babel-loader'},
         {test: /\.css$/, loader: ExtractTextPlugin.extract('style-loader', 'css-loader!postcss-loader')},
         {test: /\.eot(\?v=\d+\.\d+\.\d+)?$/, loader: "file"},

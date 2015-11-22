@@ -2,6 +2,7 @@ static:
   build: ./static/
   volumes:
     - /static
+  restart: no
 
 nginx:
   build: ./nginx/
