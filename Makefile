@@ -13,7 +13,7 @@
 DOCS=$(CURDIR)/docs
 WEB=$(CURDIR)/web
 VENV=$(WEB)/env
-MANAGE=$(WEB)/manage.py
+MANAGE=docker-compose run web python manage.py
 export DJANGO_SETTINGS_MODULE = spec_ibride.settings
 
 
@@ -26,9 +26,9 @@ env:
 
 
 populatedb:
-	rm -f data/db.sqlite3
+	$(MANAGE) reset_db --noinput
 	$(MANAGE) migrate
-	$(MANAGE) populatedb -d data/test-photo.csv
+	cat data/test-photo.csv | $(MANAGE) populatedb -d -
 
 # Testing
 tests:

@@ -2,7 +2,7 @@
 from django.http.response import Http404
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic import ListView
-from spec_ibride.gallery.models import Photo
+from spec_ibride.gallery.models import Photo, Tag
 from tagging.models import TaggedItem
 from tagging.utils import calculate_cloud
 
@@ -62,7 +62,7 @@ class PhotoListView(ListView):
 
     def _get_tagcloud_data(self):
         """Вернуть данные для облака тегов."""
-        tag_cloud = calculate_cloud(Photo.tags.usage(counts=True), steps=5)
+        tag_cloud = Tag.get_cloud()
         requested_tags = self._get_requested_tags()
         is_tag_limit_reached = len(requested_tags) >= self.max_selected_tags
         for tag in tag_cloud:

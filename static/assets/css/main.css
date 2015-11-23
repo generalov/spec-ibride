@@ -10,3 +10,8 @@ body {
     padding: 40px 15px;
     text-align: center;
 }
+.picture-preview {
+}
+.picture-preview__image {
+    max-width: 570px;
+}

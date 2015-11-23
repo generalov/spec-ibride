@@ -91,7 +91,7 @@ DATABASES = {
         'NAME': 'spec_ibride',
         'USER': 'spec_ibride',
         'PASSWORD': 'letmein',
-        'HOST': 'db',   # Or an IP Address that your DB is hosted on
+        'HOST': 'db',  # Or an IP Address that your DB is hosted on
         'PORT': '3306',
     }
 }
@@ -109,6 +109,7 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = True
+USE_X_FORWARDED_HOST = True
 
 
 # Static files (CSS, JavaScript, Images)
@@ -122,8 +123,32 @@ STATICFILES_DIRS = (
 WEBPACK_LOADER = {
     'DEFAULT': {
         'BUNDLE_DIR_NAME': 'assets/',  # must end with slash
-        'STATS_FILE': '/static/assets/webpack-stats.json',
+        'STATS_FILE': '/static/build/public/webpack-stats.json',
         'POLL_INTERVAL': 0.1,
         'IGNORE': ['.+\.hot-update.js', '.+\.map']
     }
 }
+
+# Docker container defaults
+# pylint:disable=unused-wildcard-import,import-error,no-name-in-module
+# from ixdjango.docker_settings import *
+# pylint:enable=unused-wildcard-import,import-error,no-name-in-module
+
+# Trust nginx
+USE_X_FORWARDED_HOST = True
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+# Allowed hosts, Site domain and URL
+ALLOWED_HOSTS = ['*']
+
+
+def show_toolbar(request):
+    print("IP Address for debug-toolbar: " + request.META['REMOTE_ADDR'])
+    return True
+
+
+DEBUG_TOOLBAR_CONFIG = {
+    "SHOW_TOOLBAR_CALLBACK": show_toolbar,
+}
+
+SHOW_TOOLBAR_CALLBACK = show_toolbar

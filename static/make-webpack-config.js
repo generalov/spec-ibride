@@ -60,7 +60,11 @@ module.exports = function (options) {
     var loaders = [
         // ES6 support with babel2 (look into .babelrc for list of features)
         {test: /\.jsx?$/, exclude: /(node_modules|bower_components)/, loader: 'babel-loader'},
-        {test: /\.css$/, loader: ExtractTextPlugin.extract('style-loader', 'css-loader!postcss-loader')},
+        {
+            test: /\.css$/,
+            loader: options.separateStylesheet ? ExtractTextPlugin.extract('style-loader', 'css-loader!postcss-loader')
+                : 'style-loader!css-loader!postcss-loader'
+        },
         {test: /\.eot(\?v=\d+\.\d+\.\d+)?$/, loader: "file"},
         {test: /\.(woff|woff2)$/, loader: "url?prefix=font/&limit=5000"},
         {test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/, loader: "url?limit=10000&mimetype=application/octet-stream"},

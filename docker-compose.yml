@@ -1,8 +1,9 @@
 static:
   build: ./static/
+  ports:
+    - "127.0.0.1:2992:2992"
   volumes:
-    - /static
-  restart: no
+    - ./static:/static
 
 nginx:
   build: ./nginx/
@@ -15,8 +16,7 @@ nginx:
 
 web:
   build: ./web/
-  command: /usr/local/bin/gunicorn spec_ibride.wsgi:application --log-file - --access-logfile - --log-level info -w 2 -b :8000
-  #command: python manage.py runserver 0.0.0.0:8000
+  command: python manage.py runserver 0.0.0.0:8000
   volumes:
     - ./web:/code
   volumes_from:

@@ -30,13 +30,15 @@
         <div class="row">
             {% for photo in photo_list %}
                 <div class="col-md-3 col-xs-6">
-                    <div class="gallery__item"><a class="gallery__photo" href="#">
-                        <img class="img-responsive gallery__image" src="{{ photo.src }}" alt=""
-                             width="200" height="200"
-                             onerror='this.style.display = "none"'>
-                        <span class="badge gallery__rating">+{{ photo.rating }}</span>
-                        <span class="badge gallery__pubdate">{{ photo.created_at|date }}</span>
-                    </a></div>
+                    <div class="gallery__item">
+                        <a class="gallery__photo" href="#" data-toggle="modal" data-target="#myModal"
+                           data-imgsrc="{{ photo.src }}">
+                            <img class="img-responsive gallery__image" src="{{ photo.src }}" alt=""
+                                 width="200" height="200"
+                                 onerror='this.style.display = "none"'>
+                            <span class="badge gallery__rating">+{{ photo.rating }}</span>
+                            <span class="badge gallery__pubdate">{{ photo.created_at|date }}</span>
+                        </a></div>
                 </div>
             {% empty %}
                 <div class="col-md-12">
@@ -50,6 +52,22 @@
             <hr>
             {% paginate using 'gallery/pagination.html' %}
         {% endif %}
+
+        <!-- Modal -->
+        <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+            <div class="modal-dialog picture-preview" role="document">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                aria-hidden="true">&times;</span></button>
+                        <div class="picture-preview">
+                            <img class="picture-preview__image" onerror='this.style.display = "none"'>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 {% endblock %}
 

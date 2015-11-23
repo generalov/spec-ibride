@@ -49,4 +49,4 @@ class Command(BaseCommand):
             sample_length = random.randrange(0, 6)
             if sample_length:
                 selected_tags = random.sample(tag_words, sample_length)
-                Tag.objects.update_tags(photo, u' '.join(selected_tags))
+                photo.update_tags(selected_tags)
