@@ -13,9 +13,35 @@
 DOCS=$(CURDIR)/docs
 WEB=$(CURDIR)/web
 VENV=$(WEB)/env
-MANAGE=docker-compose run web python manage.py
+ifeq ($(strip $(DOCKER_HOST)),)
+DOCKER_COMPOSE_ARGS=
+ENVIRONMENT=?development
+else
+DOCKER_COMPOSE_ARGS=-f production.yml
+ENVIRONMENT=?production
+endif
+DOCKER_COMPOSE=docker-compose $(DOCKER_COMPOSE_ARGS)
+MANAGE=$(DOCKER_COMPOSE) run web python manage.py
+
 export DJANGO_SETTINGS_MODULE = spec_ibride.settings
 
+build:
+	@if [ -n "$(DOCKER_HOST)" ]; then echo "Invalid environment"; exit 1; fi
+	$(DOCKER_COMPOSE) run static npm run build
+
+deploy:
+	$(DOCKER_COMPOSE) build
+	#$(DOCKER_COMPOSE) stop
+	$(DOCKER_COMPOSE) up -d
+	$(MANAGE) migrate
+	@if [ $(ENVIRONMENT) = 'production' ]; then $(MANAGE) collectstatic -c --noinput; fi
+
+resetdb:
+	$(MANAGE) reset_db --noinput
+	$(MANAGE) migrate
+	cat data/test-photo.csv | $(MANAGE) populatedb -d -
+
+release: build deploy
 
 # Setup environment
 env:
@@ -24,16 +50,9 @@ env:
 	$(VENV)/bin/pip install -e web
 	$(VENV)/bin/pip install --upgrade -r web/requirements-dev.txt
 
-
-populatedb:
-	$(MANAGE) reset_db --noinput
-	$(MANAGE) migrate
-	cat data/test-photo.csv | $(MANAGE) populatedb -d -
-
 # Testing
 tests:
 	$(VENV)/bin/py.test $(WEB)
-
 
 # QA
 format:

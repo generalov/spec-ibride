@@ -62,7 +62,6 @@ setup(
         'django-extensions',
         'linaro-django-pagination',
         'django-webpack-loader',
-        'IXDjango',
         'mysqlclient',
     ],
     tests_require=['tox'],

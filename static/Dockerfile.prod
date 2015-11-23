@@ -1,0 +1,3 @@
+FROM tianon/true
+COPY ./build /app/static
+VOLUME ["/app/static", "/app/static-web"]

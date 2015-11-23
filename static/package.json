@@ -5,8 +5,8 @@
   "main": "index.js",
   "private": true,
   "scripts": {
-    "build": "webpack --config webpack-production.config.js --progress --profile --colors",
-    "dev": "webpack-dev-server --config webpack-hot-dev-server.config.js --hot --progress --colors --host 0 --port 2992 --inline"
+    "build": "webpack --config scripts/webpack-production.config.js --progress --profile --colors",
+    "dev": "webpack-dev-server --config scripts/webpack-hot-dev-server.config.js --hot --progress --colors --host 0 --port 2992 --inline"
   },
   "author": "",
   "license": "ISC",

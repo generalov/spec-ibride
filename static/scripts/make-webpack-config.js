@@ -10,20 +10,22 @@ var mkdirp = require('mkdirp');
 
 
 module.exports = function (options) {
+    var baseDir = path.dirname(__dirname);
     var entry = {
         main: options.hotComponents ? ["webpack/hot/dev-server", "./assets/entry"] : "./assets/entry"
     };
     var publicPath = options.devServer ? "http://localhost:2992/static/assets/" :
         "/static/assets/";
+    var buildRoot = path.resolve('./build');
     var output = {
-        path: path.resolve('build/public'),
+        path: path.join(buildRoot, 'assets'),
         publicPath: publicPath,
         filename: options.longTermCaching ? "[name]-[hash].js" : "[name].js",
         pathinfo: options.debug
     };
     var plugins = [
         // cleanup build path
-        new Clean([output.path + '/**/*.*']),
+        new Clean([buildRoot + '/**/*.*']),
         // provide jQuery for bootstrap
         new webpack.ProvidePlugin({
             $: "jquery",
@@ -54,7 +56,7 @@ module.exports = function (options) {
             //minRatio: 0.8
         }),
         // generate webpack-stats.json for django-webpack-loader integration
-        new BundleTracker({filename: path.relative(__dirname, path.join(output.path, 'webpack-stats.json'))}),
+        new BundleTracker({filename: path.relative(baseDir, path.join(options.debug ? baseDir : buildRoot, 'webpack-stats.json'))}),
     ].filter(Boolean); // remove empty rules
 
     var loaders = [

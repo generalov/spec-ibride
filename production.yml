@@ -1,25 +1,22 @@
 static:
   build: ./static/
-  volumes:
-    - /static
-
-nginx:
-  build: ./nginx/
-  ports:
-    - "80:80"
-  volumes_from:
-    - static
-  links:
-    - web:web
+  dockerfile: Dockerfile.prod
 
 web:
   build: ./web/
-  command: /usr/local/bin/gunicorn spec_ibride.wsgi:application -w 2 -b :8000
+  dockerfile: Dockerfile.prod
+  command: /usr/local/bin/gunicorn spec_ibride.wsgi:application -w 2 -b :8000 --max-requests 10000
   #command: python manage.py runserver 0.0.0.0:8000
   expose:
     - "8000"
+  volumes_from:
+    - static
   links:
     - db:db
+  ports:
+    - "8000:8000"
+  #environment:
+  #  DJANGO_DEBUG: true
 
 db:
   image: mariadb
@@ -28,3 +25,14 @@ db:
     MYSQL_DATABASE: spec_ibride
     MYSQL_USER: spec_ibride
     MYSQL_PASSWORD: letmein
+
+nginx:
+  build: ./nginx/
+  ports:
+    - "80:80"
+  volumes_from:
+    - static
+    - web
+  links:
+    - web:web
+

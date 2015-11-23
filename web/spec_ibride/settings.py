@@ -12,9 +12,11 @@ https://docs.djangoproject.com/en/1.8/ref/settings/
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
+from distutils.util import strtobool
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+# for x, y in sorted(os.environ.items(), key=lambda x: x[0]): print x, y
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.8/howto/deployment/checklist/
@@ -23,38 +25,36 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'yr5_gb8t!zmefdw2wr8laotc0h*g0i-rg1sbjs-zyvo(smc-@s'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = strtobool(os.environ.get("DJANGO_DEBUG", 'f'))
 
 ALLOWED_HOSTS = []
 
-
 # Application definition
 
-INSTALLED_APPS = (
-    'django.contrib.admin',
-    'django.contrib.auth',
+INSTALLED_APPS = (app_name for app_name in (
+    # 'django.contrib.admin',
+    # 'django.contrib.auth',
     'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
+    # 'django.contrib.sessions',
+    # 'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    'tagging',
     'favicon',
-    'debug_toolbar',
+    'debug_toolbar' if DEBUG else '',
     'django_extensions',
     'linaro_django_pagination',
     'webpack_loader',
 
     'spec_ibride.gallery',
-)
+) if app_name)
 
 MIDDLEWARE_CLASSES = (
-    'django.contrib.sessions.middleware.SessionMiddleware',
+    # 'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
+    # 'django.middleware.csrf.CsrfViewMiddleware',
+    # 'django.contrib.auth.middleware.AuthenticationMiddleware',
+    # 'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
+    # 'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.security.SecurityMiddleware',
 )
@@ -88,11 +88,11 @@ DATABASES = {
         # 'ENGINE': 'django.db.backends.sqlite3',
         # 'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'spec_ibride',
-        'USER': 'spec_ibride',
-        'PASSWORD': 'letmein',
-        'HOST': 'db',  # Or an IP Address that your DB is hosted on
-        'PORT': '3306',
+        'NAME': os.environ.get('DB_ENV_MYSQL_DATABASE', 'spec_ibride'),
+        'USER': os.environ.get('DB_ENV_MYSQL_USER', 'spec_ibride'),
+        'PASSWORD': os.environ.get('DB_ENV_MYSQL_PASSWORD', 'letmein'),
+        'HOST': os.environ.get('DB_PORT_3306_TCP_ADDR', 'db'),
+        'PORT': os.environ.get('DB_PORT_3306_TCP_PORT', '3306'),
     }
 }
 
@@ -117,13 +117,14 @@ USE_X_FORWARDED_HOST = True
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = (
-    '/static',
+    '/app/static/assets',
 )
+STATIC_ROOT = '/app/static-web'
 
 WEBPACK_LOADER = {
     'DEFAULT': {
         'BUNDLE_DIR_NAME': 'assets/',  # must end with slash
-        'STATS_FILE': '/static/build/public/webpack-stats.json',
+        'STATS_FILE': '/app/static/webpack-stats.json',
         'POLL_INTERVAL': 0.1,
         'IGNORE': ['.+\.hot-update.js', '.+\.map']
     }
@@ -141,14 +142,14 @@ SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 # Allowed hosts, Site domain and URL
 ALLOWED_HOSTS = ['*']
 
+if DEBUG:
+    def show_toolbar(request):
+        print("IP Address for debug-toolbar: " + request.META['REMOTE_ADDR'])
+        return True
 
-def show_toolbar(request):
-    print("IP Address for debug-toolbar: " + request.META['REMOTE_ADDR'])
-    return True
 
+    DEBUG_TOOLBAR_CONFIG = {
+        "SHOW_TOOLBAR_CALLBACK": show_toolbar,
+    }
 
-DEBUG_TOOLBAR_CONFIG = {
-    "SHOW_TOOLBAR_CALLBACK": show_toolbar,
-}
-
-SHOW_TOOLBAR_CALLBACK = show_toolbar
+    SHOW_TOOLBAR_CALLBACK = show_toolbar

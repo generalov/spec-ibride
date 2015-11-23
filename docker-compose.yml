@@ -3,28 +3,21 @@ static:
   ports:
     - "127.0.0.1:2992:2992"
   volumes:
-    - ./static:/static
-
-nginx:
-  build: ./nginx/
-  ports:
-    - "80:80"
-  volumes_from:
-    - static
-  links:
-    - web:web
+    - ./static:/app/static
 
 web:
   build: ./web/
-  command: python manage.py runserver 0.0.0.0:8000
-  volumes:
-    - ./web:/code
   volumes_from:
     - static
   expose:
     - "8000"
+  ports:
+    - "127.0.0.1:8000:8000"
   links:
     - db:db
+  command: python manage.py runserver 0:8000
+  environment:
+    DJANGO_DEBUG: true
 
 db:
   image: mariadb
