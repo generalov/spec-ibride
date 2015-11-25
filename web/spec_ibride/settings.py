@@ -25,7 +25,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'yr5_gb8t!zmefdw2wr8laotc0h*g0i-rg1sbjs-zyvo(smc-@s'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = strtobool(os.environ.get("DJANGO_DEBUG", 'false'))
+DEBUG = strtobool(os.environ.get('DJANGO_DEBUG', 'false'))
 
 ALLOWED_HOSTS = []
 
@@ -142,12 +142,11 @@ ALLOWED_HOSTS = ['*']
 
 if DEBUG:
     def show_toolbar(request):
-        print("IP Address for debug-toolbar: " + request.META['REMOTE_ADDR'])
+        print('IP Address for debug-toolbar: ' + request.META['REMOTE_ADDR'])
         return True
 
-
     DEBUG_TOOLBAR_CONFIG = {
-        "SHOW_TOOLBAR_CALLBACK": show_toolbar,
+        'SHOW_TOOLBAR_CALLBACK': show_toolbar,
     }
 
     SHOW_TOOLBAR_CALLBACK = show_toolbar

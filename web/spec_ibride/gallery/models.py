@@ -7,17 +7,43 @@ from .query import SizedRawQuerySet
 
 class Photo(models.Model):
     """Фотография."""
+
     # user = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name=_('user'))
-    user_id = models.IntegerField(verbose_name=_('user'))
-    src = models.URLField(verbose_name=_('source'))
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name=_('created at'))
-    rating = models.IntegerField(verbose_name=_('source'), default=0)
-    tags = models.ManyToManyField('Tag', verbose_name=_('tags'))
+    user_id = models.IntegerField(
+        verbose_name=_('user'),
+        help_text=_('user identifier'),
+    )
+    src = models.URLField(
+        verbose_name=_('source'),
+        help_text=_('URL address')
+    )
+    created_at = models.DateTimeField(
+        verbose_name=_('created at'),
+        help_text=_('the date and time when photo created'),
+        auto_now_add=True,
+    )
+    rating = models.IntegerField(
+        verbose_name=_('source'),
+        help_text=_('the total number of users votes'),
+        default=0,
+    )
+    tags = models.ManyToManyField(
+        verbose_name=_('tags'),
+        help_text=_('list of tags'),
+        to='Tag',
+    )
+
+    class Meta:
+        verbose_name = _('photo')
+        verbose_name_plural = _('photos')
+        index_together = [
+            ['created_at'],
+            ['rating'],
+        ]
 
     @classmethod
     def find_by_tags(cls, included_tags=None, excluded_tags=None, using=None):
-        """
-        Ищет фотографии по пересечению тегов.
+        """Найти фотографии по пересечению тегов.
 
         В выборку попадают фотографии, которые содержат все теги из ``included_tags``, но при этом не содержат
         ни одного тега из ``excluded_tags``.
@@ -29,6 +55,7 @@ class Photo(models.Model):
         :param excluded_tags: набор тегов, исключающих фотографию из выборки (условие ИЛИ).
         :param using: альтернативный коннект к базе данных, если отличается.
         :return:
+
         """
         sql = str(cls.objects.all().query)
         query_parts = []
@@ -65,41 +92,42 @@ class Photo(models.Model):
         return SizedRawQuerySet(raw_query, model=cls.objects.model, params=query_params, using=using)
 
     def update_tags(self, tag_names):
-        """
-        Заменить теги.
+        """Заменить теги.
 
         :type tag_names: collections.Sized
-        :param tag_names: список новых тегов.
+        :param tag_names: список новых тегов для данной фотографии.
         :return:
+
         """
         current_tags = list(self.tags.all())
 
         # Remove tags which no longer apply
-        tags_for_removal = [tag for tag in current_tags if tag.name not in tag_names]
+        tags_for_removal = [
+            tag for tag in current_tags if tag.name not in tag_names]
         if len(tags_for_removal):
             self.tags.filter(tag__in=tags_for_removal).delete()
 
         # Add new tags
         current_tag_names = {tag.name for tag in current_tags}
-        tag_names_to_add = (tag_name for tag_name in tag_names if tag_name not in current_tag_names)
-        tags_to_add = (Tag.objects.get_or_create(name=tag_name) for tag_name in tag_names_to_add)
+        tag_names_to_add = (
+            tag_name for tag_name in tag_names if tag_name not in current_tag_names)
+        tags_to_add = (Tag.objects.get_or_create(name=tag_name)
+                       for tag_name in tag_names_to_add)
         self.tags.add(*[tag for tag, created in tags_to_add])
-
-    class Meta:
-        verbose_name = _('photo')
-        verbose_name_plural = _('photos')
-        index_together = [
-            ['created_at'],
-            ['rating'],
-        ]
 
 
 class Tag(models.Model):
-    """
-    Тег.
-    """
-    name = models.CharField(verbose_name=_('name'), max_length=255, unique=True)
+    """Тег."""
+
+    # Максимально допустимый вес тега в облаке. Веса находятся в промежутке [1, ..., cloud_steps]
     cloud_steps = 5
+
+    name = models.CharField(
+        verbose_name=_('name'),
+        help_text=_('tag name'),
+        max_length=255,
+        unique=True,
+    )
 
     class Meta:
         verbose_name = _('tag')
@@ -107,14 +135,18 @@ class Tag(models.Model):
 
     @classmethod
     def get_cloud(cls, using=None):
-        """
-        Возвращает облако тегов.
+        """Возвращает облако тегов.
 
-        Добавляет атрибут ``weight`` каждому тегу в соответствии с частотой использования.
-        Добавляет атрибут ``count`` каждому тегу в соответствии количеством использований.
+        К каждому тегу добавляются атрибуты ``count`` и ``weight``.
+
+        Атрибут ``count`` содержит общее количество использований тега.
+        Атрибут ``weight`` отражает частоту использования тега относительно других тегов. Значение находится в
+        диапазоне [1, .., ``self.count_steps``].
 
         :param using:
-        :return:
+        :return: список тегов
+        :rtype collection.Iterable
+
         """
         if using is None:
             using = cls.objects.db
@@ -125,4 +157,5 @@ class Tag(models.Model):
           GROUP BY `gallery_tag`.`id`
           ORDER BY `gallery_tag`.`name` ASC''', model=cls.objects.model, using=using)
         cloud = calculate_cloud(qs, steps=cls.cloud_steps)
+
         return cloud

@@ -2,7 +2,7 @@
 {% load make_query_string from query_string %}
 <div class="tag-cloud well well-sm">
     {% for tag in tag_cloud %}
-        <a class="tag tag_weight_{{ tag.weight }}{% if tag.active %} tag_active{% endif %}{% if tag.excluded %} tag_excluded{% endif %}{% if tag.disabled %} tag_disabled{% endif %}" role="button" href="{{ tag.url }}">
+        <a class="tag tag_weight_{{ tag.weight }}{% if tag.included %} tag_included{% endif %}{% if tag.excluded %} tag_excluded{% endif %}{% if tag.disabled %} tag_disabled{% endif %}" role="button" href="{{ tag.url }}">
             {{ tag.name }}&thinsp;({{ tag.count }})
         </a>
     {% endfor %}

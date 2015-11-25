@@ -26,9 +26,9 @@ class PhotoListView(ListView):
 
     def get_context_data(self, **kwargs):
         data = super(PhotoListView, self).get_context_data(**kwargs)
-        tag_cloud = self._get_tagcloud_data()
-        data['tag_cloud'] = tag_cloud
-        data['getvars'] = [self.ordering_kwarg, self.tag_kwarg]  # for
+        data['tag_cloud'] = self._get_tagcloud_data()
+        data['getvars'] = [self.ordering_kwarg,
+                           self.tag_kwarg]  # for pagination
         data['ordering_list'] = self._get_ordering_data()
         return data
 
@@ -44,7 +44,8 @@ class PhotoListView(ListView):
         requested_tags = self._get_requested_tags()
         requested_x_tags = self._get_requested_x_tags()
         if requested_tags or requested_x_tags:
-            queryset = Photo.find_by_tags(included_tags=requested_tags, excluded_tags=requested_x_tags)
+            queryset = Photo.find_by_tags(
+                included_tags=requested_tags, excluded_tags=requested_x_tags)
             ordering = self.get_ordering()
             if ordering:
                 if isinstance(ordering, six.string_types):
@@ -55,6 +56,12 @@ class PhotoListView(ListView):
         return queryset
 
     def _get_ordering_data(self):
+        """Вернуть список всех возможных сортировок.
+
+        :return: список сортировок
+        :rtype: collections.Iterable[dict]
+
+        """
         res = []
         for ordering in self.all_ordering:
             is_active = self._get_requested_ordering() == ordering['name']
@@ -69,10 +76,12 @@ class PhotoListView(ListView):
         return res
 
     def _get_tagcloud_data(self):
-        """
-        Вернуть данные для облака тегов.
+        """Вернуть данные для облака тегов.
 
-        normal -> included -> excluded -> normal
+        Состояние тега меняется в порядке normal -> included -> excluded -> normal -> ..
+        :return: список тегов
+        :rtype: collections.Iterable[spec_ibride.gallery.models.Tag]
+
         """
         tag_cloud = Tag.get_cloud()
         requested_tags = self._get_requested_tags()
@@ -95,13 +104,16 @@ class PhotoListView(ListView):
                 query.appendlist(self.tag_kwarg, tag.name)
             is_disabled = is_tag_limit_reached and not is_included
             url = self.request.path + '?' + query.urlencode()
-            tag.active = is_included
+
+            tag.included = is_included
             tag.excluded = is_excluded
             tag.disabled = is_disabled
             tag.url = url
+
         return tag_cloud
 
     def _get_requested_ordering(self):
+        """Вернуть порядок сортировки из запроса, либо по умолчанию."""
         return self.request.GET.get(self.ordering_kwarg, self.default_ordering)
 
     def _get_requested_tags(self):

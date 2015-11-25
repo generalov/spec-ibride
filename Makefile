@@ -22,8 +22,9 @@ DOCKER_COMPOSE_ARGS = -f $(ENVIRONMENT).yml
 endif
 DOCKER_COMPOSE = docker-compose $(DOCKER_COMPOSE_ARGS)
 MANAGE = $(DOCKER_COMPOSE) run web python manage.py
+WEB_PACKAGE = spec_ibride
 
-export DJANGO_SETTINGS_MODULE = spec_ibride.settings
+export DJANGO_SETTINGS_MODULE = $(WEB_PACKAGE).settings
 
 build:
 	@if [ -n "$(DOCKER_HOST)" ]; then echo "Invalid environment"; exit 1; fi
@@ -53,15 +54,15 @@ env:
 
 # Testing
 tests:
-	$(VENV)/bin/py.test $(WEB)
+	$(DOCKER_COMPOSE) run web py.test $(WEB_PACKAGE)
 
 # QA
 format:
-	find $(WEB) -type f -name '*.py' -exec isort --settings-path $(CURDIR) {} \;
-	pyformat -r -i --exclude _version.py $(WEB)/
+	$(DOCKER_COMPOSE) run web sh -c 'find ./$(WEB_PACKAGE) -type f -name "*.py" -exec echo isort --settings-path $$(pwd) {} \;'
+	$(DOCKER_COMPOSE) run web pyformat -r -i --exclude _version.py --exclude env ./
 
 loc:
-	sloccount $(WEB)
+	$(DOCKER_COMPOSE) run web sloccount $(WEB_PACKAGE)
 
 pep8:
 	@echo "#############################################"
@@ -80,7 +81,7 @@ lint: format pep8 pyflakes loc docs-lint
 
 # Build documentation
 docs: docs-db
-	. $(VENV)/bin/activate && sphinx-apidoc -f -o $(DOCS) $(WEB)/spec_ibride
+	. $(VENV)/bin/activate && sphinx-apidoc -f -o $(DOCS) $(WEB_PACKAGE)
 	. $(VENV)/bin/activate && $(MAKE) -C $(DOCS) html
 
 docs-db:

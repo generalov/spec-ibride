@@ -5,10 +5,8 @@ from django.db import connections
 
 
 class SizedRawQuerySet(RawQuerySet):
-    """
-    Provides an iterator which converts the results of raw SQL queries into
-    annotated model instances with ``order_by`` and limits support.
-    """
+    """Provides an iterator which converts the results of raw SQL queries into
+    annotated model instances with ``order_by`` and limits support."""
 
     def __init__(self, raw_query, model=None, query=None, params=None,
                  translations=None, using=None, hints=None):
@@ -26,14 +24,15 @@ class SizedRawQuerySet(RawQuerySet):
         return self._get_count()
 
     def set_limits(self, qs, low=None, high=None):
-        """
-        Adjusts the limits on the rows retrieved. We use low/high to set these,
-        as it makes it more Pythonic to read and write. When the SQL query is
-        created, they are converted to the appropriate offset and limit values.
+        """Adjusts the limits on the rows retrieved. We use low/high to set
+        these, as it makes it more Pythonic to read and write. When the SQL
+        query is created, they are converted to the appropriate offset and
+        limit values.
 
         Any limits passed in here are applied relative to the existing
-        constraints. So low is added to the current low value and both will be
-        clamped to any existing high value.
+        constraints. So low is added to the current low value and both
+        will be clamped to any existing high value.
+
         """
         if high is not None:
             if qs.high_mark is not None:
@@ -61,15 +60,13 @@ class SizedRawQuerySet(RawQuerySet):
         return len(self._result_cache)
 
     def __getitem__(self, k):
-        """
-        Retrieves an item or slice from the set of results.
-        """
+        """Retrieves an item or slice from the set of results."""
         if not isinstance(k, (slice,) + six.integer_types):
             raise TypeError
         assert ((not isinstance(k, slice) and (k >= 0)) or
                 (isinstance(k, slice) and (k.start is None or k.start >= 0) and
                  (k.stop is None or k.stop >= 0))), \
-            "Negative indexing is not supported."
+            'Negative indexing is not supported.'
 
         if self._result_cache is not None:
             return self._result_cache[k]
@@ -92,7 +89,8 @@ class SizedRawQuerySet(RawQuerySet):
         return list(qs)[0]
 
     def _clone(self, klass=None, setup=False, **kwargs):
-        base_queryset_class = getattr(self, '_base_queryset_class', self.__class__)
+        base_queryset_class = getattr(
+            self, '_base_queryset_class', self.__class__)
         if klass is None:
             klass = self.__class__
         elif not (issubclass(base_queryset_class, klass) or issubclass(klass, base_queryset_class)):
@@ -134,10 +132,8 @@ class SizedRawQuerySet(RawQuerySet):
             self._result_cache = list(self.iterator())
 
     def iterator(self):
-        """
-        An iterator over the results from applying this QuerySet to the
-        database.
-        """
+        """An iterator over the results from applying this QuerySet to the
+        database."""
         db = self._db
         connection = connections[db]
         model = self.model
@@ -148,13 +144,13 @@ class SizedRawQuerySet(RawQuerySet):
 
     @staticmethod
     def _compile(model, query, connection):
-        """
-        Apply to query ORDER BY and LIMIT.
+        """Apply to query ORDER BY and LIMIT.
 
         :param model:
         :param query:
         :param connection:
         :return:
+
         """
         result = [query.sql]
         order_by = query.order_by
@@ -166,7 +162,8 @@ class SizedRawQuerySet(RawQuerySet):
                     direction, field = 'DESC', field_desc[1:]
                 else:
                     direction, field = 'ASC', field_desc[1:]
-                o_sql = '{}.{} {}'.format(db_table, connection.ops.quote_name(field), direction)
+                o_sql = '{}.{} {}'.format(
+                    db_table, connection.ops.quote_name(field), direction)
                 ordering.append(o_sql)
             result.append('ORDER BY %s' % ', '.join(ordering))
         if query.high_mark is not None:
