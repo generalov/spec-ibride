@@ -3,8 +3,9 @@ import csv
 import fileinput
 import random
 
-from django.core.management.base import BaseCommand, CommandError
+from django.core.management.base import BaseCommand
 from django.utils.lorem_ipsum import words
+
 from spec_ibride.gallery.models import Photo
 
 

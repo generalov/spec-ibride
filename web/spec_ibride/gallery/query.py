@@ -1,7 +1,6 @@
 import six
-
-from django.db.models.query import RawQuerySet
 from django.db import connections
+from django.db.models.query import RawQuerySet
 
 
 class SizedRawQuerySet(RawQuerySet):

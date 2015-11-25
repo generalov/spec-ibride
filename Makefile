@@ -4,7 +4,9 @@
 # Makefile for django project
 #
 # useful targets:
-#   make env ------------------ install development requirements
+#   make buld ----------------- build artifacts for production
+#   make deploy --------------- deploy service in docker
+#   make resetdb -------------- cleanup database and insert data
 #   make tests ---------------- run the tests
 #   make lint ----------------- source code auto format and checks
 #   make docs ----------------- build HTML documentation
@@ -58,7 +60,7 @@ tests:
 
 # QA
 format:
-	$(DOCKER_COMPOSE) run web sh -c 'find ./$(WEB_PACKAGE) -type f -name "*.py" -exec echo isort --settings-path $$(pwd) {} \;'
+	$(DOCKER_COMPOSE) run web sh -c 'find ./$(WEB_PACKAGE) -type f -name "*.py" -exec isort --settings-path $$(pwd) {} \;'
 	$(DOCKER_COMPOSE) run web pyformat -r -i --exclude _version.py --exclude env ./
 
 loc:
@@ -68,15 +70,15 @@ pep8:
 	@echo "#############################################"
 	@echo "# Running PEP8 Compliance Tests"
 	@echo "#############################################"
-	-pep8 -r --ignore=E501,E221,W291,W391,E302,E251,E203,W293,E231,E303,E201,E225,E261,E241 --exclude _version.py $(WEB)/
+	$(DOCKER_COMPOSE) run web pep8 -r --ignore=E501,E221,W291,W391,E302,E251,E203,W293,E231,E303,E201,E225,E261,E241 --exclude _version.py $(WEB_PACKAGE)/
 
 pyflakes:
-	pyflakes $(WEB)
+	$(DOCKER_COMPOSE) run web pyflakes $(WEB_PACKAGE)
 
 docs-lint:
 	$(VENV)/bin/doc8 --ignore-path $(DOCS)/_build --max-line-length=120 $(DOCS)
 
-lint: format pep8 pyflakes loc docs-lint
+lint: format pep8 pyflakes loc #docs-lint
 
 
 # Build documentation

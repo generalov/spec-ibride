@@ -1,4 +1,7 @@
 import math
+
+from django.utils.translation import ugettext_lazy as _
+
 # Tag weight distribution algorithms
 LOGARITHMIC, LINEAR = 1, 2
 
