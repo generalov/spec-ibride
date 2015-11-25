@@ -10,18 +10,18 @@
 #   make docs ----------------- build HTML documentation
 #   make watch-docs ----------- starts HTTP sperver to watch documentation with live reload
 
-DOCS=$(CURDIR)/docs
-WEB=$(CURDIR)/web
-VENV=$(WEB)/env
+DOCS = $(CURDIR)/docs
+WEB = $(CURDIR)/web
+VENV = $(WEB)/env
 ifeq ($(strip $(DOCKER_HOST)),)
-DOCKER_COMPOSE_ARGS=
-ENVIRONMENT=?development
+DOCKER_COMPOSE_ARGS =
+ENVIRONMENT ?= development
 else
-DOCKER_COMPOSE_ARGS=-f production.yml
-ENVIRONMENT=?production
+ENVIRONMENT ?= production
+DOCKER_COMPOSE_ARGS = -f $(ENVIRONMENT).yml
 endif
-DOCKER_COMPOSE=docker-compose $(DOCKER_COMPOSE_ARGS)
-MANAGE=$(DOCKER_COMPOSE) run web python manage.py
+DOCKER_COMPOSE = docker-compose $(DOCKER_COMPOSE_ARGS)
+MANAGE = $(DOCKER_COMPOSE) run web python manage.py
 
 export DJANGO_SETTINGS_MODULE = spec_ibride.settings
 
@@ -30,6 +30,7 @@ build:
 	$(DOCKER_COMPOSE) run static npm run build
 
 deploy:
+	@echo Deploy environment: "$(ENVIRONMENT)"
 	$(DOCKER_COMPOSE) build
 	#$(DOCKER_COMPOSE) stop
 	$(DOCKER_COMPOSE) up -d

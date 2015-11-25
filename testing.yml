@@ -16,7 +16,7 @@ web:
   ports:
     - "8000:8000"
   environment:
-    DJANGO_DEBUG: false
+    DJANGO_DEBUG: true
 
 db:
   image: mariadb
