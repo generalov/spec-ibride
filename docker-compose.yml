@@ -9,6 +9,8 @@ web:
   build: ./web/
   volumes_from:
     - static
+  volumes:
+    - ./web:/app/web
   expose:
     - "8000"
   ports:
@@ -23,6 +25,8 @@ db:
   image: mariadb
   volumes:
     - ./data/mysql:/var/lib/mysql
+  ports:
+    - "127.0.0.1:3306:3306"
   environment:
     MYSQL_ROOT_PASSWORD: letmein
     MYSQL_DATABASE: spec_ibride

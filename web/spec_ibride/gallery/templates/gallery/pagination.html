@@ -3,7 +3,7 @@
     <!-- Pagination -->
     <div class="row text-center">
         <div class="col-lg-12">
-            <ul class="pagination">
+            <ul class="pagination pagination-sm">
                 {% block previouslink %}
                     {% if page_obj.has_previous %}
                         {% if disable_link_for_first_page and page_obj.previous_page_number == 1 %}

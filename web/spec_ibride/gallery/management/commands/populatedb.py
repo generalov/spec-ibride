@@ -1,3 +1,4 @@
+# coding=utf-8
 import csv
 import fileinput
 import random
@@ -5,11 +6,24 @@ import random
 from django.core.management.base import BaseCommand, CommandError
 from django.utils.lorem_ipsum import words
 from spec_ibride.gallery.models import Photo
-from tagging.models import Tag
 
 
 class Command(BaseCommand):
+    """
+    Вставляет в базу данных исходные значения.
+
+    Тегов ~10^2 штук, в среднем у фотки 5 тегов.
+    """
     help = 'Populate database.'
+
+    # Максимальное значение рейтинга
+    max_rating = 100500
+
+    # Количество тегов для вставки.
+    number_of_tags = 100
+
+    # Среднее количество тегов для фотографии
+    average_tags_per_photo = 5
 
     def add_arguments(self, parser):
         """
@@ -31,22 +45,32 @@ class Command(BaseCommand):
         self._generate_tags()
         self.stdout.write('Done')
 
-    def _import_data(self, csvfile):
-        csvreader = csv.DictReader(csvfile, delimiter=';')
+    def _import_data(self, csv_file):
+        """
+        Загрузить в базу данные о фоторафиях
+
+        :type csv_file: io.IOBase
+        :param csv_file: файл CSV с исходными данными о фотографиях
+        """
+
+        csv_reader = csv.DictReader(csv_file, delimiter=';')
         Photo.objects.bulk_create((
             Photo(
                 src=row['src'],
                 user_id=row['user_id'],
                 created_at=row['created_at'],
-                rating=random.randrange(0, 100500)
-            ) for row in csvreader),
+                rating=random.randrange(0, self.max_rating)
+            ) for row in csv_reader),
             batch_size=99
         )
 
     def _generate_tags(self):
-        tag_words = words(100).split()
-        for photo in Photo.objects.order_by('?')[:100]:
-            sample_length = random.randrange(0, 6)
+        """
+        Сгенерировать теги для нескольких случайных фотографий.
+        """
+        tag_words = words(self.number_of_tags).split()
+        for photo in Photo.objects.order_by('?')[:1000]:
+            sample_length = random.randrange(0, self.average_tags_per_photo * 2)
             if sample_length:
                 selected_tags = random.sample(tag_words, sample_length)
                 photo.update_tags(selected_tags)

@@ -25,7 +25,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'yr5_gb8t!zmefdw2wr8laotc0h*g0i-rg1sbjs-zyvo(smc-@s'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = strtobool(os.environ.get("DJANGO_DEBUG", 'f'))
+DEBUG = strtobool(os.environ.get("DJANGO_DEBUG", 'false'))
 
 ALLOWED_HOSTS = []
 
@@ -85,14 +85,12 @@ WSGI_APPLICATION = 'spec_ibride.wsgi.application'
 
 DATABASES = {
     'default': {
-        # 'ENGINE': 'django.db.backends.sqlite3',
-        # 'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': os.environ.get('DB_ENV_MYSQL_DATABASE', 'spec_ibride'),
-        'USER': os.environ.get('DB_ENV_MYSQL_USER', 'spec_ibride'),
-        'PASSWORD': os.environ.get('DB_ENV_MYSQL_PASSWORD', 'letmein'),
-        'HOST': os.environ.get('DB_PORT_3306_TCP_ADDR', 'db'),
-        'PORT': os.environ.get('DB_PORT_3306_TCP_PORT', '3306'),
+        'NAME': os.environ.get('DB_ENV_MYSQL_DATABASE'),
+        'USER': os.environ.get('DB_ENV_MYSQL_USER'),
+        'PASSWORD': os.environ.get('DB_ENV_MYSQL_PASSWORD'),
+        'HOST': 'db',
+        'PORT': '3306',
     }
 }
 

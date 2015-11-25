@@ -11,6 +11,11 @@
     background-color: #337ab7;
 }
 
+.tag_excluded {
+    color: #fff;
+    background-color: #cd5c5c;
+}
+
 .tag_disabled {
     color: gray;
 }

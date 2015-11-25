@@ -56,7 +56,6 @@ setup(
     zip_safe=True,
     install_requires=[
         'django',
-        'django-tagging',
         'django-favicon',
         'django-debug-toolbar',
         'django-extensions',
